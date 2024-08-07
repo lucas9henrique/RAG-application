@@ -54,6 +54,7 @@ def extract_text_from_pdf(pdf_path):
 
 # Preparação dos dados
 data = pd.DataFrame({'report_text': [pdf_texts]})  # Adiciona o texto extraído do PDF ao DataFrame
+data.to_csv('dados.csv', index=False)
 
 # Função para pré-processar o texto
 def preprocess_text(text):
@@ -62,6 +63,8 @@ def preprocess_text(text):
     return tokens
 
 # Aplicando a função de pré-processamento aos textos
+print("---------------------") 
+print(data['report_text'])   
 data['tokens'] = data['report_text'].apply(lambda x: preprocess_text(x))
 
 # Criando o modelo BM25
