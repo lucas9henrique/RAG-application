@@ -43,29 +43,21 @@ import fitz  # PyMuPDF
 # Baixando recursos necessários para nltk
 nltk.download('punkt')
 
-# Função para extrair texto de PDFs
-def extract_text_from_pdf(pdf_path):
-    document = fitz.open(pdf_path)
-    text = ""
-    for page_num in range(document.page_count):
-        page = document.load_page(page_num)
-        text += page.get_text()
-    return text
-
-# Preparação dos dados
-data = pd.DataFrame({'report_text': [pdf_texts]})  # Adiciona o texto extraído do PDF ao DataFrame
+# Adiciona o texto extraído do PDF ao DataFrame
 data.to_csv('dados.csv', index=False)
 
 # Função para pré-processar o texto
 def preprocess_text(text):
-    tokens = word_tokenize(text.lower())
-    tokens = [word for word in tokens if word.isalnum()]
-    return tokens
+    if isinstance(text, str):
+        tokens = word_tokenize(text.lower())
+        tokens = [word for word in tokens if word.isalnum()]
+        return tokens
+    return []
 
 # Aplicando a função de pré-processamento aos textos
 print("---------------------") 
 print(data['report_text'])   
-data['tokens'] = data['report_text'].apply(lambda x: preprocess_text(x))
+data['tokens'] = data['report_text'].apply(preprocess_text)
 
 # Criando o modelo BM25
 bm25 = BM25Okapi(data['tokens'].tolist())
