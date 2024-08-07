@@ -52,12 +52,8 @@ def extract_text_from_pdf(pdf_path):
         text += page.get_text()
     return text
 
-# Exemplo de uso para leitura de PDF
-pdf_path = "caminho_para_o_seu_arquivo.pdf"
-pdf_text = extract_text_from_pdf(pdf_path)
-
 # Preparação dos dados
-data = pd.DataFrame({'report_text': [pdf_text]})  # Adiciona o texto extraído do PDF ao DataFrame
+data = pd.DataFrame({'report_text': [pdf_texts]})  # Adiciona o texto extraído do PDF ao DataFrame
 
 # Função para pré-processar o texto
 def preprocess_text(text):
@@ -66,7 +62,7 @@ def preprocess_text(text):
     return tokens
 
 # Aplicando a função de pré-processamento aos textos
-data['tokens'] = data['report_text'].apply(preprocess_text)
+data['tokens'] = data['report_text'].apply(lambda x: preprocess_text(x))
 
 # Criando o modelo BM25
 bm25 = BM25Okapi(data['tokens'].tolist())
