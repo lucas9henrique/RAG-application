@@ -60,8 +60,12 @@ def retrieve_documents(query, bm25_model, data, top_n=5):
     return data.iloc[top_n_indices]
 
 # Exemplo de uso para recuperação de documentos
-query = "engine failure during flight"
-retrieved_docs = retrieve_documents(query, bm25, data)
+queries = [
+    "engine failure during flight",
+    "emergency landing procedures",
+    "bird strike incidents"
+]
+retrieved_docs = retrieve_documents(queries, bm25, data)
 print(retrieved_docs[['report_text']])
 
 # Carregando o modelo de linguagem
@@ -77,14 +81,13 @@ def generate_answer(query, retrieved_docs, generator_model, max_input_length=102
     
     input_text = f"Context: {context}\n\nQuestion: {query}\n\nAnswer:"
     response = generator_model(input_text, 
-        max_new_tokens=200,  # Aumentar para gerar respostas mais longas
-        num_return_sequences=1,
-        temperature=0.6,  # Ajustar para gerar respostas mais variadas
-        top_p=0.9,  # Usar nucleus sampling
-        top_k=50  # Usar top-k sampling
+        max_new_tokens=150,  # Aumentar para gerar respostas mais longas
+        num_return_sequences=1
         )
     return response[0]['generated_text']
 
-# Exemplo de uso para geração de resposta
-answer = generate_answer(query, retrieved_docs, generator)
-print(answer)
+# Gerar respostas para todas as queries
+for query in queries:
+    retrieved_docs = retrieve_documents(query, bm25, data)
+    answer = generate_answer(query, retrieved_docs, generator)
+    print(f"Query: {query}\nAnswer:\n{answer}\n")
