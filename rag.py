@@ -26,7 +26,7 @@ def extract_texts_from_folder(folder_path):
     return texts
 
 # Caminho para a pasta contendo os PDFs - substitua pelo caminho correto
-folder_path = '/mnt/data/pdfs'
+folder_path = './docs'
 pdf_texts = extract_texts_from_folder(folder_path)
 
 # Criando um DataFrame com os textos extraídos
@@ -67,11 +67,16 @@ print(retrieved_docs[['report_text']])
 # Carregando o modelo de linguagem
 generator = pipeline('text-generation', model='distilgpt2')
 
-# Função para gerar respostas
-def generate_answer(query, retrieved_docs, generator_model):
+# Função para gerar respostas com truncamento do texto de entrada
+def generate_answer(query, retrieved_docs, generator_model, max_input_length=1024):
     context = " ".join(retrieved_docs['report_text'].tolist())
+    
+    # Truncar o texto de entrada se for maior que max_input_length
+    if len(context) > max_input_length:
+        context = context[-max_input_length:]
+    
     input_text = f"Context: {context}\n\nQuestion: {query}\n\nAnswer:"
-    response = generator_model(input_text, max_length=150, num_return_sequences=1)
+    response = generator_model(input_text, max_new_tokens=50, num_return_sequences=1)
     return response[0]['generated_text']
 
 # Exemplo de uso para geração de resposta
