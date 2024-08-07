@@ -75,7 +75,7 @@ retrieved_docs = retrieve_documents(query, bm25, data)
 print(retrieved_docs[['report_text']])
 
 # Carregando o modelo de linguagem
-generator = pipeline('text-generation', model='gpt-3.5-turbo')
+generator = pipeline('text-generation', model='gpt-2')
 
 # Função para gerar respostas
 def generate_answer(query, retrieved_docs, generator_model):
