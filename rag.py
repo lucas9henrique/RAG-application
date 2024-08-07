@@ -1,5 +1,10 @@
 import fitz  # PyMuPDF
 import os
+import pandas as pd
+import nltk
+from nltk.tokenize import word_tokenize
+from transformers import pipeline
+from rank_bm25 import BM25Okapi
 
 # Função para extrair texto de um PDF
 def extract_text_from_pdf(pdf_path):
@@ -20,43 +25,28 @@ def extract_texts_from_folder(folder_path):
             texts.append(text)
     return texts
 
-# Caminho para a pasta contendo os PDFs
-folder_path = ".\docs"
+# Caminho para a pasta contendo os PDFs - substitua pelo caminho correto
+folder_path = '/mnt/data/pdfs'
 pdf_texts = extract_texts_from_folder(folder_path)
 
 # Criando um DataFrame com os textos extraídos
-import pandas as pd
-
 data = pd.DataFrame({'report_text': pdf_texts})
 
 # Exibir as primeiras linhas do dataframe para verificar os textos extraídos
 print(data.head())
 
-
-import pandas as pd
-import nltk
-from nltk.tokenize import word_tokenize
-from transformers import pipeline
-from rank_bm25 import BM25Okapi
-import fitz  # PyMuPDF
-
 # Baixando recursos necessários para nltk
 nltk.download('punkt')
 
-# Adiciona o texto extraído do PDF ao DataFrame
-data.to_csv('dados.csv', index=False)
-
 # Função para pré-processar o texto
 def preprocess_text(text):
-    if isinstance(text, str):
+    if isinstance(text, str):  # Verificar se o texto é uma string
         tokens = word_tokenize(text.lower())
         tokens = [word for word in tokens if word.isalnum()]
         return tokens
     return []
 
 # Aplicando a função de pré-processamento aos textos
-print("---------------------") 
-print(data['report_text'])   
 data['tokens'] = data['report_text'].apply(preprocess_text)
 
 # Criando o modelo BM25
