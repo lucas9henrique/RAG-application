@@ -33,7 +33,7 @@ pdf_texts = extract_texts_from_folder(folder_path)
 data = pd.DataFrame({'report_text': pdf_texts})
 
 # Exibir as primeiras linhas do dataframe para verificar os textos extraídos
-print(data.head())
+#print(data.head())
 
 # Baixando recursos necessários para nltk
 nltk.download('punkt')
@@ -65,7 +65,7 @@ retrieved_docs = retrieve_documents(query, bm25, data)
 print(retrieved_docs[['report_text']])
 
 # Carregando o modelo de linguagem
-generator = pipeline('text-generation', model='distilgpt2')
+generator = pipeline('text-generation', model='gpt2')
 
 # Função para gerar respostas com truncamento do texto de entrada
 def generate_answer(query, retrieved_docs, generator_model, max_input_length=1024):
@@ -76,7 +76,13 @@ def generate_answer(query, retrieved_docs, generator_model, max_input_length=102
         context = context[-max_input_length:]
     
     input_text = f"Context: {context}\n\nQuestion: {query}\n\nAnswer:"
-    response = generator_model(input_text, max_new_tokens=50, num_return_sequences=1)
+    response = generator_model(input_text, 
+        max_new_tokens=200,  # Aumentar para gerar respostas mais longas
+        num_return_sequences=1,
+        temperature=0.6,  # Ajustar para gerar respostas mais variadas
+        top_p=0.9,  # Usar nucleus sampling
+        top_k=50  # Usar top-k sampling
+        )
     return response[0]['generated_text']
 
 # Exemplo de uso para geração de resposta
