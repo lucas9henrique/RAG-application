@@ -1,3 +1,5 @@
+#RagEnv
+
 import fitz  # PyMuPDF
 import os
 import pandas as pd
@@ -61,9 +63,9 @@ def retrieve_documents(query, bm25_model, data, top_n=5):
 
 # Exemplo de uso para recuperação de documentos
 queries = [
-    "engine failure during flight",
-    "emergency landing procedures",
-    "bird strike incidents"
+    "How many accidents have occurred on florida?",
+    "What are the main causes of accidents on florida?",
+    "Which state has the biggest number of accidents?"
 ]
 retrieved_docs = retrieve_documents(queries, bm25, data)
 print(retrieved_docs[['report_text']])
@@ -81,7 +83,7 @@ def generate_answer(query, retrieved_docs, generator_model, max_input_length=102
     
     input_text = f"Context: {context}\n\nQuestion: {query}\n\nAnswer:"
     response = generator_model(input_text, 
-        max_new_tokens=150,  # Aumentar para gerar respostas mais longas
+        max_new_tokens=50,  # Aumentar para gerar respostas mais longas
         num_return_sequences=1
         )
     return response[0]['generated_text']
