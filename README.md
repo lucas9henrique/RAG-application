@@ -1,5 +1,6 @@
 # RAG-application
 
+Grupo: Lucas Henrique, Marissol Guerra e Vitor Alencar
 # Projeto de Mineração de Textos para Desenvolvimento de um RAG
 
 ## Saídas Obtidas
